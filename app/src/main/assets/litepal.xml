@@ -1,0 +1,9 @@
+<litepal>
+    <dbname value="ivweather" />
+    <version value="1" />
+    <list>
+        <mapping class="com.ivhong.ivweather.db.Province" />
+        <mapping class="com.ivhong.ivweather.db.City" />
+        <mapping class="com.ivhong.ivweather.db.County" />
+    </list>
+</litepal>
