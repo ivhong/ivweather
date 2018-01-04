@@ -1,5 +1,8 @@
 package com.ivhong.ivweather.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -24,6 +27,8 @@ import java.util.List;
  */
 
 public class Utility {
+    private static SharedPreferences.Editor spfsEditor=null;
+    private static SharedPreferences prefs = null;
     public static boolean handleProvinceResponse(String response){
         if(!TextUtils.isEmpty(response)){
             ArrayList<JsonObject> jsonObjects = new Gson().fromJson(response, new TypeToken<ArrayList<JsonObject>>(){}.getType());
@@ -79,5 +84,35 @@ public class Utility {
 
         return null;
 
+    }
+
+    public static void requestWeather(final String weatherId, okhttp3.Callback callback) {
+        String weatherUrl = "http://guolin.tech/api/weather?cityid=" + weatherId + "&key=5499c6cd4d514ca7b7196f9ebbb92c7f";
+        HttpUtil.sendOkHttpRequest(weatherUrl, callback);
+    }
+
+    public static void loadBingPic(okhttp3.Callback callback){
+        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        HttpUtil.sendOkHttpRequest(requestBingPic, callback);
+    }
+
+    public static void spfsAdd(Context context, String key, String value){
+        if(spfsEditor == null){
+            spfsEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        }
+        spfsEditor.putString(key, value);
+        spfsEditor.apply();
+    }
+
+    private static SharedPreferences getPrefs(Context context){
+        if(prefs == null){
+            prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        }
+
+        return prefs;
+    }
+
+    public static String spfsGetString(Context context, String key, String defValue){
+        return getPrefs(context).getString(key, defValue);
     }
 }

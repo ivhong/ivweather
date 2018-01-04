@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.ivhong.ivweather.db.City;
 import com.ivhong.ivweather.db.County;
 import com.ivhong.ivweather.db.Province;
+import com.ivhong.ivweather.gson.Weather;
 import com.ivhong.ivweather.util.HttpUtil;
 import com.ivhong.ivweather.util.Utility;
 
@@ -27,6 +28,7 @@ import org.litepal.crud.DataSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -82,10 +84,18 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY){
                     String weaterhId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weaterhId);
-                    startActivity(intent);
-                    getActivity().finish();
+
+                    if(getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weaterhId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if(getActivity() instanceof WeatherActivity){
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weaterhId);
+                    }
                 }
             }
         });
