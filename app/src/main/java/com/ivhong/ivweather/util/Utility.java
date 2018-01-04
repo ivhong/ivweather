@@ -8,7 +8,10 @@ import com.google.gson.reflect.TypeToken;
 import com.ivhong.ivweather.db.City;
 import com.ivhong.ivweather.db.County;
 import com.ivhong.ivweather.db.Province;
+import com.ivhong.ivweather.gson.Weather;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -62,5 +65,19 @@ public class Utility {
             }
         }
         return true;
+    }
+
+    public static Weather handleWeatherResponse(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent, Weather.class);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+
     }
 }
